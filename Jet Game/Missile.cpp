@@ -11,9 +11,8 @@ void Missile::initVBO()
     glBindBuffer(GL_ARRAY_BUFFER, 0);   // Unbind the buffer
 }
 
-Missile::Missile(float x, float y, float size) : posX(x), posY(y), size(size)
-{
-	outOfBound = false;
+Missile::Missile(float x, float y, float size, float dirX, float dirY)
+    : posX(x), posY(y), size(size), missileSpeed(0.01f), outOfBound(false), directionX(dirX), directionY(dirY) {
     initVBO();
 }
 
@@ -22,6 +21,18 @@ Missile::~Missile()
     if (vbo) {
         glDeleteBuffers(1, &vbo);
     }
+}
+
+float Missile::getPosX() const {
+    return posX;
+}
+
+float Missile::getPosY() const {
+    return posY;
+}
+
+float Missile::getSize() const {
+    return size;
 }
 
 void Missile::render()
@@ -42,22 +53,29 @@ void Missile::render()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Missile::update(float speed)
-{
-	posY += speed;
-
-	if (posY > 1.0f) {
-		outOfBound = true;
-	}
+void Missile::update(float speed) {
+    posX += directionX * speed;
+    posY += directionY * speed;
+    if (posX < -1.0f || posX > 1.0f || posY < -1.0f || posY > 1.0f) {
+        outOfBound = true;
+    }
 }
 
 void Missile::scale(float scaleX, float scaleY)
 {
-	posX *= scaleX;
+    posX *= scaleX;
 	posY *= scaleY;
 }
 
 bool Missile::isOutOfBound() const
 {
     return outOfBound;
+}
+
+float Missile::getMissileSpeed() const {
+	return missileSpeed;
+}
+
+void Missile::setMissileSpeed(float speed) {
+	missileSpeed = speed;
 }

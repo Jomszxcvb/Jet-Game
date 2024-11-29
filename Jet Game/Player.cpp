@@ -1,14 +1,9 @@
 #include "Player.h"
 
+#include <iostream>
 #include <algorithm>
 
-Player::Player() {
-	// Initialize the player position and size
-	posX = 0.0f;
-	posY = 0.0f;
-	size = 0.1f;
-    missileSpeed = 0.03f;
-
+Player::Player() : posX(0.0f), posY(0.0f), size(0.1f), attackSpeed(0.15f), hearts(5), invincible(false), invincibleTimer(0.0f), blinkState(false) {
     // Initialize the jet body vertices
     GLfloat body[] = {
         0.0f, 0.95f, 0.0f, -0.05f, 0.825f, 0.0f, -0.07f, 0.535f, 0.0f, -0.1725f, 0.475f, 0.0f, -0.2f, 0.2f, 0.0f, -0.166f, -0.375f, 0.0f,
@@ -50,6 +45,10 @@ Player::~Player() {
 }
 
 void Player::render() {
+    if (invincible && blinkState) {
+        return; // Skip rendering when blinkState is true
+    }
+
     glPushMatrix();
     glTranslatef(posX, posY, 0.0f);
     glScalef(size, size, 1.0f);
@@ -99,53 +98,36 @@ void Player::render() {
     glPopMatrix();
 }
 
-void Player::update(bool moveUp, bool moveDown, bool moveLeft, bool moveRight, float speed) {
-    float moveX = 0.0f;
-    float moveY = 0.0f;
+void Player::update(bool moveUp, bool moveDown, bool moveLeft, bool moveRight, float speed, const std::vector<Missile*>& enemyMissiles) {
+    if (moveUp) posY += speed;
+    if (moveDown) posY -= speed;
+    if (moveLeft) posX -= speed;
+    if (moveRight) posX += speed;
 
-    if (moveUp) moveY += speed;
-    if (moveDown) moveY -= speed;
-    if (moveLeft) moveX -= speed;
-    if (moveRight) moveX += speed;
+    // Boundary checks
+    if (posX - size < -1.0f) posX = -1.0f + size;
+    if (posX + size > 1.0f) posX = 1.0f - size;
+    if (posY - size < -1.0f) posY = -1.0f + size;
+    if (posY + size > 1.0f) posY = 1.0f - size;
 
-    posX += moveX;
-    posY += moveY;
+    if (invincible) {
+        invincibleTimer += 0.016f; // Assuming update is called every 16ms (60 FPS)
+        blinkState = !blinkState; // Toggle blink state
+        if (invincibleTimer >= 5.0f) {
+            invincible = false;
+            invincibleTimer = 0.0f;
+            blinkState = false; // Reset blink state
+        }
+    }
 
-    // Define the outermost edges of the jet
-    float jetWidth = 0.66f * size; // Half the width of the jet
-    float jetHeight = 0.95f * size; // Half the height of the jet
-
-    // Clamp the player position to the screen bounds based on the jet's dimensions
-    if (posX - jetWidth < -1.0f) posX = -1.0f + jetWidth;
-    if (posX + jetWidth > 1.0f) posX = 1.0f - jetWidth;
-    if (posY - jetHeight < -1.0f) posY = -1.0f + jetHeight;
-    if (posY + jetHeight > 1.0f) posY = 1.0f - jetHeight;
-}
-
-void Player::launchMissile() {
-    float missileSpeed = 0.05f; // Define the speed of the missile
-	missiles.emplace_back(posX, posY + size, missileSpeed); // Create a new missile at the player's position
+    for (const Missile* missile : enemyMissiles) {
+        handleCollisionWithEnemyMissile(missile->getPosX(), missile->getPosY(), missile->getSize());
+    }
 }
 
 bool Player::checkCollision(float objX, float objY, float objWidth, float objHeight) const {
-    // Define the outermost edges of the jet
-    float jetWidth = 0.66f * size; // Half the width of the jet
-    float jetHeight = 0.95f * size; // Half the height of the jet
-
-    // Calculate the bounding box of the jet
-    float jetLeft = posX - jetWidth;
-    float jetRight = posX + jetWidth;
-    float jetTop = posY + jetHeight;
-    float jetBottom = posY - jetHeight;
-
-    // Calculate the bounding box of the object
-    float objLeft = objX - objWidth / 2.0f;
-    float objRight = objX + objWidth / 2.0f;
-    float objTop = objY + objHeight / 2.0f;
-    float objBottom = objY - objHeight / 2.0f;
-
-    // Check for collision
-    return !(jetLeft > objRight || jetRight < objLeft || jetTop < objBottom || jetBottom > objTop);
+    float distance = sqrt((posX - objX) * (posX - objX) + (posY - objY) * (posY - objY));
+    return distance < (size + objWidth);
 }
 
 float Player::getX() const {
@@ -157,8 +139,78 @@ float Player::getY() const
 	return posY;
 }
 
+float Player::getAttackSpeed() const {
+	return attackSpeed;
+}
+
 // Method to scale the player based on the window size
 void Player::scale(float scaleX, float scaleY) {
     posX *= scaleX;
     posY *= scaleY;
+}
+
+int Player::getHearts() const {
+    return hearts;
+}
+
+void Player::decreaseHeart() {
+    if (!invincible) {
+        hearts--;
+        invincible = true;
+        invincibleTimer = 0.0f;
+        std::cout << "Player hit! Hearts remaining: " << hearts << std::endl;
+    }
+}
+
+void Player::resetHearts() {
+    hearts = 5;
+}
+
+void Player::handleCollisionWithEnemyMissile(float missileX, float missileY, float missileSize) {
+    if (invincible) return;
+
+    if (checkCollision(missileX, missileY, missileSize, missileSize)) {
+        decreaseHeart();
+    }
+}
+
+bool Player::isInvincible() const {
+    return invincible;
+}
+
+void Player::setInvincible(bool state) {
+    invincible = state;
+}
+
+void Player::renderHearts() const {
+    float heartSize = 0.05f;
+    float startX = -0.9f; // Starting position for the hearts
+    float startY = 0.9f;  // Position near the top-left corner
+
+    for (int i = 0; i < hearts; ++i) {
+        float x = startX + i * (heartSize + 0.02f); // Spacing between hearts
+
+        glBegin(GL_TRIANGLE_FAN);
+        glColor3f(1.0f, 0.0f, 0.0f); // Red color for hearts
+
+        // Center of the heart
+        glVertex2f(x, startY - heartSize / 2);
+
+        // Top left curve
+        for (int j = 0; j <= 180; j += 10) {
+            float angle = j * 3.14159f / 180.0f;
+            glVertex2f(x + heartSize * 0.5f * cos(angle) - heartSize * 0.25f, startY - heartSize * 0.5f * sin(angle));
+        }
+
+        // Top right curve
+        for (int j = 180; j <= 360; j += 10) {
+            float angle = j * 3.14159f / 180.0f;
+            glVertex2f(x + heartSize * 0.5f * cos(angle) + heartSize * 0.25f, startY - heartSize * 0.5f * sin(angle));
+        }
+
+        // Bottom point
+        glVertex2f(x, startY - heartSize);
+
+        glEnd();
+    }
 }
