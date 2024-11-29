@@ -45,6 +45,7 @@ public:
     // Getters for position
     float getX() const;
     float getY() const;
+	float getSize() const;
 
     float getAttackSpeed() const;
 
@@ -64,4 +65,7 @@ public:
 
     // Render hearts
     void renderHearts() const;
+
+    // Method to handle player taking damage
+    void takeDamage();
 };

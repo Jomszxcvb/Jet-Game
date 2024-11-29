@@ -99,36 +99,48 @@ void Player::render() {
 }
 
 void Player::update(bool moveUp, bool moveDown, bool moveLeft, bool moveRight, float speed, const std::vector<Missile*>& enemyMissiles) {
+    // Update player position and handle collisions
+    if (!invincible) {
+        for (const Missile* missile : enemyMissiles) {
+            if (checkCollision(missile->getPosX(), missile->getPosY(), missile->getSize(), missile->getSize())) {
+                takeDamage();
+                break;
+            }
+        }
+    }
+
+    // Update invincibility timer
+    if (invincible) {
+        invincibleTimer += 0.016f; // Assuming update is called every 16ms (60 FPS)
+        if (static_cast<int>(invincibleTimer * 10) % 2 == 0) {
+            blinkState = !blinkState; // Toggle blink state every 100ms
+        }
+        if (invincibleTimer >= 2.0f) { // 2 seconds of invincibility
+            invincible = false;
+            invincibleTimer = 0.0f;
+            blinkState = false;
+        }
+    }
+
+    // Update player position based on input
     if (moveUp) posY += speed;
     if (moveDown) posY -= speed;
     if (moveLeft) posX -= speed;
     if (moveRight) posX += speed;
 
-    // Boundary checks
-    if (posX - size < -1.0f) posX = -1.0f + size;
-    if (posX + size > 1.0f) posX = 1.0f - size;
-    if (posY - size < -1.0f) posY = -1.0f + size;
-    if (posY + size > 1.0f) posY = 1.0f - size;
-
-    if (invincible) {
-        invincibleTimer += 0.016f; // Assuming update is called every 16ms (60 FPS)
-        blinkState = !blinkState; // Toggle blink state
-        if (invincibleTimer >= 5.0f) {
-            invincible = false;
-            invincibleTimer = 0.0f;
-            blinkState = false; // Reset blink state
-        }
-    }
-
-    for (const Missile* missile : enemyMissiles) {
-        handleCollisionWithEnemyMissile(missile->getPosX(), missile->getPosY(), missile->getSize());
-    }
+    // Ensure the player does not go past the screen boundaries
+    float halfSize = size / 2.0f;
+    if (posX - halfSize < -1.0f) posX = -1.0f + halfSize;
+    if (posX + halfSize > 1.0f) posX = 1.0f - halfSize;
+    if (posY - halfSize < -1.0f) posY = -1.0f + halfSize;
+    if (posY + halfSize > 1.0f) posY = 1.0f - halfSize;
 }
 
 bool Player::checkCollision(float objX, float objY, float objWidth, float objHeight) const {
-    float distance = sqrt((posX - objX) * (posX - objX) + (posY - objY) * (posY - objY));
-    return distance < (size + objWidth);
+    // Collision detection logic
+    return (posX < objX + objWidth && posX + size > objX && posY < objY + objHeight && posY + size > objY);
 }
+
 
 float Player::getX() const {
     return posX;
@@ -137,6 +149,10 @@ float Player::getX() const {
 float Player::getY() const
 {
 	return posY;
+}
+
+float Player::getSize() const {
+	return size;
 }
 
 float Player::getAttackSpeed() const {
@@ -167,10 +183,8 @@ void Player::resetHearts() {
 }
 
 void Player::handleCollisionWithEnemyMissile(float missileX, float missileY, float missileSize) {
-    if (invincible) return;
-
     if (checkCollision(missileX, missileY, missileSize, missileSize)) {
-        decreaseHeart();
+        takeDamage();
     }
 }
 
@@ -180,6 +194,9 @@ bool Player::isInvincible() const {
 
 void Player::setInvincible(bool state) {
     invincible = state;
+    if (state) {
+        invincibleTimer = 0.0f;
+    }
 }
 
 void Player::renderHearts() const {
@@ -212,5 +229,12 @@ void Player::renderHearts() const {
         glVertex2f(x, startY - heartSize);
 
         glEnd();
+    }
+}
+
+void Player::takeDamage() {
+    if (!invincible) {
+        decreaseHeart();
+        setInvincible(true);
     }
 }
