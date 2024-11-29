@@ -5,42 +5,51 @@ bool Controller::mapKey(unsigned char key, bool isPressed)
     switch (key) {
     case 'w':
 	case 'W':
-        keyStates[MovementKey::W] = isPressed;
+        keyStates[InputKey::W] = isPressed;
         return true;
     case 'a':
 	case 'A':
-        keyStates[MovementKey::A] = isPressed;
+        keyStates[InputKey::A] = isPressed;
         return true;
     case 's':
 	case 'S':
-        keyStates[MovementKey::S] = isPressed;
+        keyStates[InputKey::S] = isPressed;
         return true;
     case 'd':
 	case 'D':
-        keyStates[MovementKey::D] = isPressed;
+        keyStates[InputKey::D] = isPressed;
         return true;
+	case '1':
+		keyStates[InputKey::_1] = isPressed;
+		return true;
+	case '2':
+		keyStates[InputKey::_2] = isPressed;
     default:
         return false;
     }
 }
 
-std::string Controller::keyToString(MovementKey key) const
+std::string Controller::keyToString(InputKey key) const
 {
     switch (key) {
-    case MovementKey::W: return "W";
-    case MovementKey::A: return "A";
-    case MovementKey::S: return "S";
-    case MovementKey::D: return "D";
+    case InputKey::W: return "W";
+    case InputKey::A: return "A";
+    case InputKey::S: return "S";
+    case InputKey::D: return "D";
+	case InputKey::_1: return "1";
+	case InputKey::_2: return "2";
     default: return "Unknown";
     }
 }
 
 Controller::Controller() : debugMode(true) {
     // Initialize all keys to "not pressed"
-    keyStates[MovementKey::W] = false;
-    keyStates[MovementKey::A] = false;
-    keyStates[MovementKey::S] = false;
-    keyStates[MovementKey::D] = false;
+    keyStates[InputKey::W] = false;
+    keyStates[InputKey::A] = false;
+    keyStates[InputKey::S] = false;
+    keyStates[InputKey::D] = false;
+	keyStates[InputKey::_1] = false;
+	keyStates[InputKey::_2] = false;
 }
 
 Controller::~Controller()
@@ -66,7 +75,7 @@ void Controller::keyUp(unsigned char key)
     }
 }
 
-bool Controller::isKeyPressed(MovementKey key) const
+bool Controller::isKeyPressed(InputKey key) const
 {
     auto it = keyStates.find(key);
     return it != keyStates.end() ? it->second : false;
