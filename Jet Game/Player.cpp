@@ -1,0 +1,164 @@
+#include "Player.h"
+
+#include <algorithm>
+
+Player::Player() {
+	// Initialize the player position and size
+	posX = 0.0f;
+	posY = 0.0f;
+	size = 0.1f;
+    missileSpeed = 0.03f;
+
+    // Initialize the jet body vertices
+    GLfloat body[] = {
+        0.0f, 0.95f, 0.0f, -0.05f, 0.825f, 0.0f, -0.07f, 0.535f, 0.0f, -0.1725f, 0.475f, 0.0f, -0.2f, 0.2f, 0.0f, -0.166f, -0.375f, 0.0f,
+        0.166f, -0.375f, 0.0f, 0.2f, 0.2f, 0.0f, 0.1725f, 0.475f, 0.0f, 0.07f, 0.535f, 0.0f, 0.05f, 0.825f, 0.0f, 0.0f, 0.95f, 0.0f
+    };
+    std::copy(std::begin(body), std::end(body), bodyVertices);
+
+    // Initialize the front wings vertices
+    GLfloat frontWings[] = {
+        -0.2f, 0.2f, 0.0f, -0.66f, -0.166f, 0.0f, -0.62f, -0.3f, 0.0f, -0.5f, -0.35f, 0.0f, -0.235f, -0.245f, 0.0f, -0.175f, -0.26f, 0.0f,
+        0.175f, -0.26f, 0.0f, 0.235f, -0.245f, 0.0f, 0.5f, -0.35f, 0.0f, 0.62f, -0.3f, 0.0f, 0.66f, -0.166f, 0.0f, 0.2f, 0.2f, 0.0f
+    };
+    std::copy(std::begin(frontWings), std::end(frontWings), frontWingsVertices);
+
+    // Initialize the thrusters vertices
+    GLfloat thrusters[] = {
+        -0.166f, -0.375f, 0.0f, -0.120f, -0.51f, 0.0f, -0.044f, -0.51f, 0.0f, 0.0f, -0.375f, 0.0f,
+        0.0f, -0.375f, 0.0f, 0.044f, -0.51f, 0.0f, 0.120f, -0.51f, 0.0f, 0.166f, -0.375f, 0.0f
+    };
+    std::copy(std::begin(thrusters), std::end(thrusters), thrustersVertices);
+
+    // Initialize the fins vertices
+    GLfloat fins[] = {
+        -0.1f, -0.185f, 0.0f, -0.25f, -0.28f, 0.0f, -0.25f, -0.45f, 0.0f, -0.1f, -0.36f, 0.0f,
+        0.1f, -0.36f, 0.0f, 0.25f, -0.45f, 0.0f, 0.25f, -0.28f, 0.0f, 0.1f, -0.185f, 0.0f
+    };
+    std::copy(std::begin(fins), std::end(fins), finsVertices);
+
+    // Initialize the back wings vertices
+    GLfloat backWings[] = {
+        -0.1f, -0.22f, 0.0f, -0.38f, -0.52f, 0.0f, -0.38f, -0.615f, 0.0f, -0.24f, -0.66f, 0.0f, -0.1f, -0.55f, 0.0f,
+        0.1f, -0.22f, 0.0f, 0.38f, -0.52f, 0.0f, 0.38f, -0.615f, 0.0f, 0.24f, -0.66f, 0.0f, 0.1f, -0.55f, 0.0f
+    };
+    std::copy(std::begin(backWings), std::end(backWings), backWingsVertices);
+}
+
+Player::~Player() {
+
+}
+
+void Player::render() {
+    glPushMatrix();
+    glTranslatef(posX, posY, 0.0f);
+    glScalef(size, size, 1.0f);
+
+    // Render the jet body
+    GLubyte bodyIndices[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glColor3ub(112, 146, 190);
+    glVertexPointer(3, GL_FLOAT, 0, bodyVertices);
+    glDrawElements(GL_POLYGON, 12, GL_UNSIGNED_BYTE, bodyIndices);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    // Render the front wings
+    GLubyte frontWingsIndices[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glColor3ub(96, 125, 163);
+    glVertexPointer(3, GL_FLOAT, 0, frontWingsVertices);
+    glDrawElements(GL_POLYGON, 12, GL_UNSIGNED_BYTE, frontWingsIndices);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    // Render the thrusters
+    GLubyte thrustersIndices[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glColor3ub(54, 70, 92);
+    glVertexPointer(3, GL_FLOAT, 0, thrustersVertices);
+    glDrawElements(GL_QUADS, 8, GL_UNSIGNED_BYTE, thrustersIndices);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    // Render the fins
+    GLubyte finsIndices[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glColor3ub(135, 176, 230);
+    glVertexPointer(3, GL_FLOAT, 0, finsVertices);
+    glDrawElements(GL_QUADS, 8, GL_UNSIGNED_BYTE, finsIndices);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    // Render the back wings
+    GLubyte leftBackWingsIndices[] = { 0, 1, 2, 3, 4 };
+    GLubyte rightBackWingsIndices[] = { 5, 6, 7, 8, 9 };
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glColor3ub(96, 125, 163);
+    glVertexPointer(3, GL_FLOAT, 0, backWingsVertices);
+    glDrawElements(GL_POLYGON, 5, GL_UNSIGNED_BYTE, leftBackWingsIndices);
+    glDrawElements(GL_POLYGON, 5, GL_UNSIGNED_BYTE, rightBackWingsIndices);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glPopMatrix();
+}
+
+void Player::update(bool moveUp, bool moveDown, bool moveLeft, bool moveRight, float speed) {
+    float moveX = 0.0f;
+    float moveY = 0.0f;
+
+    if (moveUp) moveY += speed;
+    if (moveDown) moveY -= speed;
+    if (moveLeft) moveX -= speed;
+    if (moveRight) moveX += speed;
+
+    posX += moveX;
+    posY += moveY;
+
+    // Define the outermost edges of the jet
+    float jetWidth = 0.66f * size; // Half the width of the jet
+    float jetHeight = 0.95f * size; // Half the height of the jet
+
+    // Clamp the player position to the screen bounds based on the jet's dimensions
+    if (posX - jetWidth < -1.0f) posX = -1.0f + jetWidth;
+    if (posX + jetWidth > 1.0f) posX = 1.0f - jetWidth;
+    if (posY - jetHeight < -1.0f) posY = -1.0f + jetHeight;
+    if (posY + jetHeight > 1.0f) posY = 1.0f - jetHeight;
+}
+
+void Player::launchMissile() {
+    float missileSpeed = 0.05f; // Define the speed of the missile
+	missiles.emplace_back(posX, posY + size, missileSpeed); // Create a new missile at the player's position
+}
+
+bool Player::checkCollision(float objX, float objY, float objWidth, float objHeight) const {
+    // Define the outermost edges of the jet
+    float jetWidth = 0.66f * size; // Half the width of the jet
+    float jetHeight = 0.95f * size; // Half the height of the jet
+
+    // Calculate the bounding box of the jet
+    float jetLeft = posX - jetWidth;
+    float jetRight = posX + jetWidth;
+    float jetTop = posY + jetHeight;
+    float jetBottom = posY - jetHeight;
+
+    // Calculate the bounding box of the object
+    float objLeft = objX - objWidth / 2.0f;
+    float objRight = objX + objWidth / 2.0f;
+    float objTop = objY + objHeight / 2.0f;
+    float objBottom = objY - objHeight / 2.0f;
+
+    // Check for collision
+    return !(jetLeft > objRight || jetRight < objLeft || jetTop < objBottom || jetBottom > objTop);
+}
+
+float Player::getX() const {
+    return posX;
+}
+
+float Player::getY() const
+{
+	return posY;
+}
+
+// Method to scale the player based on the window size
+void Player::scale(float scaleX, float scaleY) {
+    posX *= scaleX;
+    posY *= scaleY;
+}
