@@ -3,7 +3,7 @@
 #include <iostream>
 #include <algorithm>
 
-Player::Player() : posX(0.0f), posY(0.0f), size(0.1f), attackSpeed(0.15f), hearts(5), invincible(false), invincibleTimer(0.0f), blinkState(false) {
+Player::Player() : posX(0.0f), posY(0.0f), size(0.1f), attackSpeed(0.3f), hearts(5), invincible(false), invincibleTimer(0.0f), blinkState(false) {
     // Initialize the jet body vertices
     GLfloat body[] = {
         0.0f, 0.95f, 0.0f, -0.05f, 0.825f, 0.0f, -0.07f, 0.535f, 0.0f, -0.1725f, 0.475f, 0.0f, -0.2f, 0.2f, 0.0f, -0.166f, -0.375f, 0.0f,

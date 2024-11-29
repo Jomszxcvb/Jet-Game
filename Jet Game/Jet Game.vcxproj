@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArmoredWarship.cpp" />
     <ClCompile Include="BasicWarship.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Jet Game.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArmoredWarship.h" />
     <ClInclude Include="BasicWarship.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Game.h" />

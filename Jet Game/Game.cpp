@@ -98,8 +98,8 @@ void Game::update(int value) {
     // Update spawn timer
     spawnTimer += 0.016f; // Assuming update is called every 16ms (60 FPS)
 
-    // Spawn a new warship every 1 second
-    if (spawnTimer >= 1.0f) {
+    // Spawn a new warship every 2 seconds
+    if (spawnTimer >= 2.0f) {
         spawnWarship();
         spawnTimer = 0.0f; // Reset timer
     }
