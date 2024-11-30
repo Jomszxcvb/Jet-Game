@@ -1,7 +1,7 @@
 #include "PowerUp.h"
 #include <GL/glut.h>
 
-PowerUp::PowerUp(PowerUpType type, float x, float y) : type(type), posX(x), posY(y), speed(0.5f) {}
+PowerUp::PowerUp(PowerUpType type, float x, float y) : type(type), posX(x), posY(y), speed(2.0f) {}
 
 void PowerUp::update(float deltaTime, float playerX, float playerY) {
     // Move towards the player
