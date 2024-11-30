@@ -207,9 +207,9 @@ void Player::renderHearts() const {
     for (int i = 0; i < 5; ++i) {
         float spaceX = startPosX + i * (heartSize + 0.055f); // Horizontal Spacing between hearts 
 
-        glColor3ub(255, 0, 0);
+        glColor3ub(255, 0, 0); //Color Red
         glBegin(GL_LINE_LOOP);
-        for (float x = -1.5; x <= 1.5; x += 0.001) {
+        for (float x = -1.2; x <= 1.2; x += 0.001) {
             float delta = cbrt(x * x) * cbrt(x * x) - 3.2 * x * x + 3.2;
             float y1 = (cbrt(x * x) + sqrt(delta)) / 2;
             float y2 = (cbrt(x * x) - sqrt(delta)) / 2;
