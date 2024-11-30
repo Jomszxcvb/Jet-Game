@@ -200,34 +200,22 @@ void Player::setInvincible(bool state) {
 }
 
 void Player::renderHearts() const {
-    float heartSize = 0.05f;
-    float startX = -0.9f; // Starting position for the hearts
-    float startY = 0.9f;  // Position near the top-left corner
+    float heartSize = 0.03f;
+    float startPosX = -0.9f;
+    float posY = 0.9f;
 
-    for (int i = 0; i < hearts; ++i) {
-        float x = startX + i * (heartSize + 0.02f); // Spacing between hearts
+    for (int i = 0; i < 5; ++i) {
+        float spaceX = startPosX + i * (heartSize + 0.055f); // Horizontal Spacing between hearts 
 
-        glBegin(GL_TRIANGLE_FAN);
-        glColor3f(1.0f, 0.0f, 0.0f); // Red color for hearts
-
-        // Center of the heart
-        glVertex2f(x, startY - heartSize / 2);
-
-        // Top left curve
-        for (int j = 0; j <= 180; j += 10) {
-            float angle = j * 3.14159f / 180.0f;
-            glVertex2f(x + heartSize * 0.5f * cos(angle) - heartSize * 0.25f, startY - heartSize * 0.5f * sin(angle));
+        glColor3ub(255, 0, 0);
+        glBegin(GL_LINE_LOOP);
+        for (float x = -1.5; x <= 1.5; x += 0.001) {
+            float delta = cbrt(x * x) * cbrt(x * x) - 3.2 * x * x + 3.2;
+            float y1 = (cbrt(x * x) + sqrt(delta)) / 2;
+            float y2 = (cbrt(x * x) - sqrt(delta)) / 2;
+            glVertex2f(x * heartSize + spaceX, y1 * heartSize + posY);
+            glVertex2f(x * heartSize + spaceX, y2 * heartSize + posY);
         }
-
-        // Top right curve
-        for (int j = 180; j <= 360; j += 10) {
-            float angle = j * 3.14159f / 180.0f;
-            glVertex2f(x + heartSize * 0.5f * cos(angle) + heartSize * 0.25f, startY - heartSize * 0.5f * sin(angle));
-        }
-
-        // Bottom point
-        glVertex2f(x, startY - heartSize);
-
         glEnd();
     }
 }
