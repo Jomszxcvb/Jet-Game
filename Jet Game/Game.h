@@ -7,6 +7,7 @@
 #include "ArmoredWarship.h"
 #include "Controller.h"
 #include "PowerUp.h"
+#include "ScoringSystem.h"
 
 class Game {
 public:
@@ -28,6 +29,7 @@ private:
     static Game* instance;
 
     Player* player;
+    ScoringSystem* score;
     std::vector<Missile*> playerMissiles;
     std::vector<Missile*> warshipMissiles;
     std::vector<Missile*> armoredWarshipMissiles;

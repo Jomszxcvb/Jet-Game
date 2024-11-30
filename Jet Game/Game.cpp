@@ -34,6 +34,7 @@ void Game::init(int argc, char** argv) {
     glewInit(); // Initialize GLEW
 
     player = new Player();
+    score = new ScoringSystem();
 
     glutDisplayFunc(Game::displayCallback);
     glutTimerFunc(1000 / 60, Game::updateCallback, 0);
@@ -47,6 +48,8 @@ void Game::display() {
     glClear(GL_COLOR_BUFFER_BIT);
     player->renderHearts(); // Render hearts
     player->render();
+
+    score->render();
 
     for (Missile* missile : playerMissiles) {
         missile->render();
@@ -206,6 +209,9 @@ void Game::update(int value) {
         if (!warshipDestroyed) {
             ++warshipIt;
         }
+        else {
+            score->updateScore(100);
+        }
     }
 
     // Check for collisions between player missiles and armored warships
@@ -236,6 +242,9 @@ void Game::update(int value) {
         }
         if (!armoredWarshipDestroyed) {
             ++armoredWarshipIt;
+        }
+        else {
+            score->updateScore(300);
         }
     }
 
