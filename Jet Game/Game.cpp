@@ -443,7 +443,7 @@ void Game::applyPowerUp(PowerUpType type) {
         gigantificationActive = true;
         player->scale(2.0f, 2.0f); // Increase player size
         for (Missile* missile : playerMissiles) {
-            missile->scale(2.0f, 2.0f); // Increase missile size
+            missile->scale(10.0f, 10.0f); // Increase missile size
         }
         break;
     case PowerUpType::RapidFire:
