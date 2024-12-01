@@ -24,6 +24,8 @@ public:
     void init(int argc, char** argv);
     void display();
     void update(int value);
+    void renderGameOver();
+    bool isGameOver();
 
 private:
     static Game* instance;
@@ -35,6 +37,10 @@ private:
     std::vector<Missile*> armoredWarshipMissiles;
     std::vector<BasicWarship> warships;
     std::vector<ArmoredWarship> armoredWarships;
+
+    // Used for fade-in effect of Game Over
+    float textAlpha;
+    float textFadeSpeed;
 
     float missileTimer;
     float spawnTimer;

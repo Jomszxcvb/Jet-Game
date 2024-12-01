@@ -12,5 +12,5 @@ public:
 	~ScoringSystem();
 
 	void updateScore(int points);
-	void render();
+	void render(float alpha);
 };
