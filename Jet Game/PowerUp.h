@@ -24,6 +24,6 @@ private:
     PowerUpType type;
     float posX, posY;
     float speed;
-
+    float size;
     void getColor(float& r, float& g, float& b) const;
 };

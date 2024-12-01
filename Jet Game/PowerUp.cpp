@@ -1,7 +1,7 @@
 #include "PowerUp.h"
 #include <GL/glut.h>
 
-PowerUp::PowerUp(PowerUpType type, float x, float y) : type(type), posX(x), posY(y), speed(2.0f) {}
+PowerUp::PowerUp(PowerUpType type, float x, float y) : type(type), posX(x), posY(y), speed(2.0f), size(0.10f) {}
 
 void PowerUp::update(float deltaTime, float playerX, float playerY) {
     // Move towards the player
@@ -244,6 +244,7 @@ void PowerUp::getColor(float& r, float& g, float& b) const {
 void PowerUp::render() const {
     glPushMatrix();
     glTranslatef(posX, posY, 0.0f);
+    glScalef(size, size, 0.5f);
     switch (type) {
         case PowerUpType::HomingMissile:
             HomingMissileSprite();
