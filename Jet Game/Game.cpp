@@ -44,7 +44,7 @@ void Game::init(int argc, char** argv) {
     glutKeyboardUpFunc(Game::keyboardUpCallback);
 
     //Apply fade-in while rendering Game Over
-    glEnable(GL_BLEND);
+    glEnable(GL_BLEND); 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glutMainLoop();
@@ -52,9 +52,9 @@ void Game::init(int argc, char** argv) {
 
 void Game::display() {
     glClear(GL_COLOR_BUFFER_BIT);
-    
+
     if (!isGameOver()) { // If the player has hearts left, then render the objects
-        player->renderHearts();
+        player->renderHearts(); 
         player->render();
 
         score->render(1.0f); //Set the alpha of score to 1.0f
@@ -75,9 +75,11 @@ void Game::display() {
         for (BasicWarship& warship : warships) {
             warship.render();
         }
+
         for (ArmoredWarship& armoredWarship : armoredWarships) {
             armoredWarship.render();
         }
+
         for (const PowerUp& powerUp : powerUps) {
             powerUp.render();
         }
@@ -93,6 +95,7 @@ void Game::display() {
 }
 
 void Game::update(int value) {
+
     if (!isGameOver()) { // Continue updating as long as the player has hearts left
         bool moveUp = controller.isKeyPressed(InputKey::W);
         bool moveDown = controller.isKeyPressed(InputKey::S);
@@ -143,6 +146,7 @@ void Game::update(int value) {
         // Update warships and their missiles
         for (BasicWarship& warship : warships) {
             warship.update(0.001f); // Update warship with a speed value
+
             // Warship fires a missile towards the player
             if (warship.canFireMissile()) {
                 float directionX = player->getX() - warship.getPosX();
@@ -160,6 +164,7 @@ void Game::update(int value) {
         // Update armored warships and their missiles
         for (ArmoredWarship& armoredWarship : armoredWarships) {
             armoredWarship.update(0.01f); // Update armored warship with a speed value
+
             // Armored warship fires a missile towards the player every second
             if (armoredWarship.canFireMissile()) {
                 float directionX = player->getX() - armoredWarship.getPosX();
@@ -192,8 +197,10 @@ void Game::update(int value) {
 
         // Remove nullptr entries from the warshipMissiles vector
         warshipMissiles.erase(std::remove_if(warshipMissiles.begin(), warshipMissiles.end(), [](Missile* missile) { return missile == nullptr; }), warshipMissiles.end());
+
         // Remove nullptr entries from the armoredWarshipMissiles vector
         armoredWarshipMissiles.erase(std::remove_if(armoredWarshipMissiles.begin(), armoredWarshipMissiles.end(), [](Missile* missile) { return missile == nullptr; }), armoredWarshipMissiles.end());
+
         // Check for collisions between player missiles and warships
         for (auto warshipIt = warships.begin(); warshipIt != warships.end();) {
             bool warshipDestroyed = false;
@@ -205,6 +212,7 @@ void Game::update(int value) {
                     missileIt = playerMissiles.erase(missileIt);
                     warshipIt = warships.erase(warshipIt);
                     warshipDestroyed = true;
+
                     // 1/10 chance to drop a power-up at the warship's location
                     if (rand() % 10 == 0) {
                         spawnPowerUp(warshipX, warshipY);
@@ -237,10 +245,12 @@ void Game::update(int value) {
                     if (armoredWarshipIt->isDestroyed()) {
                         armoredWarshipIt = armoredWarships.erase(armoredWarshipIt);
                         armoredWarshipDestroyed = true;
+
                         // 1/10 chance to drop a power-up at the armored warship's location
                         if (rand() % 10 == 0) {
                             spawnPowerUp(armoredWarshipX, armoredWarshipY);
                         }
+
                         break;
                     }
                 }
@@ -315,6 +325,7 @@ void Game::update(int value) {
 }
 
 void Game::spawnWarship() {
+
     float randomX;
     bool positionValid;
 

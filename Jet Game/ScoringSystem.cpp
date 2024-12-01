@@ -29,5 +29,4 @@ void ScoringSystem::render(float alpha) {
         text++;
     }
 
-    glutSwapBuffers();
 }
