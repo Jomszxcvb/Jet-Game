@@ -16,6 +16,8 @@ public:
     void update(float deltaTime, float playerX, float playerY);
     bool checkCollision(float playerX, float playerY, float playerSize) const;
     PowerUpType getType() const;
+    void HomingMissileSprite() const;
+    void GigantificationSprite() const;
     void render() const;
 
 private:
