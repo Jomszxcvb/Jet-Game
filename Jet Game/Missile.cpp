@@ -63,8 +63,7 @@ void Missile::update(float speed) {
 
 void Missile::scale(float scaleX, float scaleY)
 {
-    posX *= scaleX;
-	posY *= scaleY;
+    size *= scaleX;
 }
 
 bool Missile::isOutOfBound() const

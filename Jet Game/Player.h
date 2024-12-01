@@ -1,8 +1,10 @@
 #pragma once
 #include <GL/glew.h>
+#include <GL/glut.h>
 #include <vector>
 
 #include "Missile.h"
+#include "PowerUp.h"
 
 class Player {
 private:
@@ -33,6 +35,13 @@ private:
 
     bool blinkState;
 
+    bool homingMissileActive;
+    bool gigantificationActive;
+    bool rapidFireActive;
+
+    float homingMissileTimer;
+    float gigantificationTimer;
+    float rapidFireTimer;
 public:
     Player();
     ~Player();
@@ -48,6 +57,7 @@ public:
 	float getSize() const;
 
     float getAttackSpeed() const;
+    void setAttackSpeed(float newAttackSpeed);
 
     // Method to scale the player based on the window size
     void scale(float scaleX, float scaleY);

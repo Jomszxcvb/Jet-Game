@@ -12,8 +12,8 @@ void ScoringSystem::updateScore(int points) {
     totalScore += points;
 }
 
-void ScoringSystem::render() {
-    glColor3f(1.0f, 1.0f, 1.0f);
+void ScoringSystem::render(float alpha) {
+    glColor4f(1.0f, 1.0f, 1.0f, alpha);
 
     std::stringstream scoreStream;
     scoreStream << "Score: " << totalScore;

@@ -32,6 +32,9 @@ void PowerUp::getColor(float& r, float& g, float& b) const {
     case PowerUpType::Gigantification:
         r = 0.0f; g = 0.0f; b = 1.0f; // Blue color for Gigantification
         break;
+    case PowerUpType::RapidFire:
+        r = 1.0f; g = 0.7f; b = 0.0f; // Orange color for RapidFire
+        break;
     }
 }
 

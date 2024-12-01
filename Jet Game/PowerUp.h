@@ -5,7 +5,8 @@
 
 enum class PowerUpType {
     HomingMissile,
-    Gigantification
+    Gigantification,
+    RapidFire
 };
 
 class PowerUp {
