@@ -303,7 +303,7 @@ void Game::update(int value) {
         }
 
         // Update power-up effects
-        if (homingMissileActive || gigantificationActive || rapidFireActive) {
+        if (homingMissileActive || gigantificationActive) {
             powerUpEffectTimer += 0.016f;
             if (powerUpEffectTimer >= 10.0f) {
                 revertPowerUpEffects();
@@ -313,11 +313,14 @@ void Game::update(int value) {
 
         // Handle power-up activation via number keys
         if (controller.isKeyPressed(InputKey::_1)) {
-            Game::usePowerUp(PowerUpType::RapidFire);
-
+            if (!homingMissileActive) {
+                Game::usePowerUp(PowerUpType::HomingMissile);
+            }
         }
         if (controller.isKeyPressed(InputKey::_2)) {
-            Game::usePowerUp(PowerUpType::Gigantification);
+            if (!gigantificationActive) {
+                Game::usePowerUp(PowerUpType::Gigantification);
+            }
         }
 
         glutPostRedisplay();
@@ -445,10 +448,6 @@ void Game::applyPowerUp(PowerUpType type) {
         for (Missile* missile : playerMissiles) {
             missile->scale(10.0f, 10.0f); // Increase missile size
         }
-        break;
-    case PowerUpType::RapidFire:
-        rapidFireActive = true;
-        player->setAttackSpeed(0.1f); // Increase attack speed
         break;
     }
 }
