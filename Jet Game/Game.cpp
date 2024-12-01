@@ -16,6 +16,7 @@ Game::Game() : player(nullptr), missileTimer(0.0f), spawnTimer(0.0f), armoredWar
 
 Game::~Game() {
     delete player;
+    delete score;
     for (Missile* missile : playerMissiles) {
         delete missile;
     }
